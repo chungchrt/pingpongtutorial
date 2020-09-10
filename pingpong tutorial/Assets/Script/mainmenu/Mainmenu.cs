@@ -12,7 +12,7 @@ public class Mainmenu : MonoBehaviourPunCallbacks
 
     private bool isConnecting = false;
     private const string GameVersion = "0.1"; //Pascal naming for const 
-    private const int MaxPlayersPerRoom = 2;
+    private const int MaxPlayersPerRoom = 2; //!!!!!!!!!!!!!!!! 1 for single player , ,,
 
     private void Awake() => PhotonNetwork.AutomaticallySyncScene = true; // sync the scene between the players
 
@@ -70,6 +70,11 @@ public class Mainmenu : MonoBehaviourPunCallbacks
         {
             waitingStatusText.text = "Opponent Found";
             Debug.Log("Matching is ready to begin");
+            if (MaxPlayersPerRoom == 1)
+            { //single player setting , for debug
+                PhotonNetwork.LoadLevel("photon_pingpong"); // Delete for multiplayer
+            }
+
         }
     }
 
