@@ -10,7 +10,9 @@ using UnityEngine;
 /* How to make the ball not shaky 101
  * 1: use Velocity instead of transfrom.translate (Use physics) , as transfrom.translate is == teleport
  * 2:  use Photon Rigidbody2d transfrom View + TransformView Classic ( set estimate speed) Together;
- * 3:!!!!!need to check about interoplate  / setting interpolate is smoother*/
+ * 3:!!!!!need to check about interoplate  / setting interpolate is smoother
+ * 
+ * Trigeer in out for accurate score */
 
 /// <summary>
 /// RPC is called twice now , fix it !
@@ -100,18 +102,23 @@ public class Ball : MonoBehaviour
         {
             Debug.Log("Ontrigger enter left");
             newRound = true;
-            PV.RPC("RPC_SendNewRound", RpcTarget.All, newRound);//Sync the newRound variable and side
             Gamecontroller.instance.Scored("left");
         }
         if (other.gameObject.CompareTag("right"))
         {
             Debug.Log("Ontrigger enter right");
             newRound = true;
-            PV.RPC("RPC_SendNewRound", RpcTarget.All, newRound);//Sync the newRound variable and side
             Gamecontroller.instance.Scored("right");
         }
     }
-    [PunRPC]
+
+
+   private void OnTriggerExit2D (Collider2D other)
+    {
+        PV.RPC("RPC_SendNewRound", RpcTarget.All, newRound);//Sync the newRound variable and side
+    }
+  
+   [PunRPC]
     void RPC_SendNewRound(bool syncIn ) //RPC to synce the newRound and call Scored(side)
     {
         newRound = syncIn;
